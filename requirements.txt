@@ -1,0 +1,6 @@
+torch
+scikit-learn
+scipy
+numpy
+matplotlib
+git+https://github.com/scikit-multilearn/scikit-multilearn.git

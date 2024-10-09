@@ -1,0 +1,15 @@
+ccnenv
+*/__pycache__/*
+*/.pytest_cache/*
+*/.mypy_cache/*
+*/.tox/*
+*/.coverage
+*/.coverage.*
+*/.DS_Store
+*/.vscode/*
+*/.idea/*
+*/.mypy
+loss*
+hyp
+results
+saved_models

@@ -1,6 +1,5 @@
 """
 Implement the one error metric
-
 """
 
 def findmax(outputs):

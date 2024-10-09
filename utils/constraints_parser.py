@@ -1,14 +1,22 @@
+"""
+The matrices produced in this module are described in section 4.1 Constraint Module of the paper.
+"""
+
 import numpy as np
 
 ######
 # Note: Since in practice all the datasets had only one stratum, we implemented the code for one stratum
 #####
 
-def createIs(file_path,num_classes):
 
-    #Matrix with indices for positive literals
+def createIs(file_path, num_classes):
+    """
+    Generates two matrices, Iplus and Iminus, which correspond to the presence or absence of literals in the constraint bodies.
+    """
+
+    # Matrix with indices for positive literals
     Iplus = []
-    #Matrix with indeces for negative literals
+    # Matrix with indeces for negative literals
     Iminus = []
     with open(file_path, 'r') as f:
         for line in f:
@@ -29,7 +37,12 @@ def createIs(file_path,num_classes):
     Iminus = np.array(Iminus)
     return Iplus, Iminus
 
-def createM(file_path,num_classes):
+
+def createM(file_path, num_classes):
+    """
+    Matrix M maps the head of each constraint to a binary representation.
+    Each row corresponds to a specific constraint with its associated target class.
+    """
     M = []
     with open(file_path, 'r') as f:
         for line in f:
