@@ -4,6 +4,7 @@ This module implements evaluation of the model on the test set and creates the r
 
 import torch
 import json
+import math
 
 from utils.metrics import *
 import os
@@ -48,7 +49,6 @@ def network_eval(model, Iplus, Iminus, M, loader, dataset, write_folder, device,
     constr_test = constr_test[:, different_from_0]
     predicted_test = predicted_test[:, different_from_0]
 
-
     average_prob = []
     for i in range(predicted_test.shape[0]):
         pred = predicted_test[i].float()
@@ -56,7 +56,7 @@ def network_eval(model, Iplus, Iminus, M, loader, dataset, write_folder, device,
         y_np = y.cpu().numpy()
         pred_np = pred.cpu().numpy()
         average_prob.append(
-            sum(y_np * pred_np + abs(1 - y_np) * (1 - pred_np)) / len(pred_np)
+            math.prod(y_np * pred_np + abs(1 - y_np) * (1 - pred_np)) / len(pred_np)
         )
     average_prob = sum(average_prob) / len(average_prob)
     
