@@ -48,6 +48,19 @@ def network_eval(model, Iplus, Iminus, M, loader, dataset, write_folder, device,
     constr_test = constr_test[:, different_from_0]
     predicted_test = predicted_test[:, different_from_0]
 
+
+    average_prob = []
+    for i in range(predicted_test.shape[0]):
+        pred = predicted_test[i].float()
+        y = y_test[i].float()
+        y_np = y.cpu().numpy()
+        pred_np = pred.cpu().numpy()
+        average_prob.append(
+            sum(y_np * pred_np + abs(1 - y_np) * (1 - pred_np)) / len(pred_np)
+        )
+    average_prob = sum(average_prob) / len(average_prob)
+    
+    acc = accuracy_score(y_test, predicted_test)
     hamming = hamming_loss(y_test, predicted_test)
     multilabel_accuracy = jaccard_score(
         y_test, predicted_test, average='micro')
@@ -70,12 +83,14 @@ def network_eval(model, Iplus, Iminus, M, loader, dataset, write_folder, device,
         'seed': hyp['seed'],
         'best_epoch': hyp['best_epoch'],
         'hidden_dim': hyp['hidden_dim'],
+        'acc':acc,
         'hamming': hamming,
         'multilabel_accuracy': multilabel_accuracy,
         'ranking_loss': ranking_loss,
         'cov_error': cov_error,
         'avg_precision': avg_precision,
         'one_err': one_err,
+        "probability": float(average_prob),
         'END': 'END',
         'hyp': hyp
     }

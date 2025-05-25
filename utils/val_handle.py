@@ -5,7 +5,7 @@ from scipy.io import loadmat
 from skmultilearn.dataset import load_dataset, load_from_arff
 
 
-def get_best_hyp(dataset):
+def get_best_hyp(dataset, seed):
     """
     Returns the dictionary containing the best hyperparameters for each dataset 
 
@@ -15,11 +15,12 @@ def get_best_hyp(dataset):
     load_folder = 'hyp/'+dataset+'/'
     load_files = glob.glob(load_folder+'*.pickle')
     for file in load_files:
-        with open(file, 'rb') as handle:
-            hyp = pickle.load(handle) 
-            if hyp['val_loss'] < min_val_loss:
-                min_val_loss = hyp['val_loss']
-                best_hyp = hyp
+        if f"_seed{seed}" in file:
+            with open(file, 'rb') as handle:
+                hyp = pickle.load(handle) 
+                if hyp['val_loss'] < min_val_loss:
+                    min_val_loss = hyp['val_loss']
+                    best_hyp = hyp
     return best_hyp
 
 

@@ -252,7 +252,7 @@ for epoch in range(num_epochs):
             hyp['best_epoch'] = epoch-max_patience
             hyp['val_loss'] = min_loss.item()
             dump_path = 'hyp/'+dataset_name+'/batch_size'+str(args.batch_size)+'_dropout'+str(args.dropout)+'_hdim'+str(
-                args.hidden_dim)+'_lr'+str(args.lr)+'_nn_lin'+str(non_lin)+'_n_layers'+str(num_layers)+'_w_decay'+str(weight_decay)
+                args.hidden_dim)+'_lr'+str(args.lr)+'_nn_lin'+str(non_lin)+'_n_layers'+str(num_layers)+'_w_decay'+str(weight_decay)+'_seed' + str(seed)
             # Store data (serialize)
             with open(dump_path+'.pickle', 'wb') as handle:
                 pickle.dump(hyp, handle, protocol=pickle.HIGHEST_PROTOCOL)

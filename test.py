@@ -54,7 +54,7 @@ parser.add_argument('--device', type=str, default='0',
                     help='GPU (default:0)')
 args = parser.parse_args()
 # Take the hyperparameters value that generate the smallest validation loss
-hyp = get_best_hyp(args.dataset)
+hyp = get_best_hyp(args.dataset, args.seed)
 num_epochs = hyp['best_epoch']
 hyp['seed'] = args.seed
 
