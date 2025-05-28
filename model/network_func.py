@@ -84,9 +84,14 @@ def check_if_satisfies_constraints(combination, constraints) -> bool:
     
     return True
 
-def load_valid_combinations(path, n_classes):
+def load_valid_combinations(path, n_classes, include_constraints=True):
     all_combinations = np.array([np.expand_dims(np.array(list(format(i, f"0{n_classes}b")), dtype=int), 0)
                                 for i in range(2**n_classes)])
+    if not include_constraints:
+        all_combinations = all_combinations.reshape(-1, n_classes)
+        return all_combinations
+    
+    # Read constraints from the file
     constraints = read_constrains(path)
     valid_constraint = []
     for comb in all_combinations:
@@ -132,11 +137,6 @@ def network_eval(model, Iplus, Iminus, M, loader, dataset, write_folder, device,
                 (constr_test, cpu_constrained_output), dim=0)
             y_test = torch.cat((y_test, y), dim=0)
 
-    different_from_0 = (y_test.sum(0) != 0).clone().detach()
-    y_test = y_test[:, different_from_0]
-    constr_test = constr_test[:, different_from_0]
-    predicted_test = predicted_test[:, different_from_0]
-
     average_prob = []
     for i in range(predicted_test.shape[0]):
         pred = constr_test.data[i].float()
@@ -144,8 +144,9 @@ def network_eval(model, Iplus, Iminus, M, loader, dataset, write_folder, device,
         y_np = y.cpu().numpy()
         pred_np = pred.cpu().numpy()
         average_prob.append(
-            math.prod(y_np * pred_np + abs(1 - y_np) * (1 - pred_np)) / len(pred_np)
+            math.prod(y_np * pred_np + abs(1 - y_np) * (1 - pred_np))
         )
+        
     average_prob = sum(average_prob) / len(average_prob)
     
     acc = accuracy_score(y_test, predicted_test)
@@ -168,7 +169,7 @@ def network_eval(model, Iplus, Iminus, M, loader, dataset, write_folder, device,
 
     
     if dataset in ["emotions", "scene", "yeast"]:
-        combinations_valid = np.array(load_valid_combinations(f"data\{dataset}\{dataset}_constraints.txt", len(y_test[0])))
+        combinations_valid = np.array(load_valid_combinations(f"data\{dataset}\{dataset}_constraints.txt", len(y_test[0]), include_constraints=False))
         distr = generate_distribution_independent_preds(constr_test.data, combinations_valid)
         acc1 = check_top_n(distr, y_test, combinations_valid, n=1)
         acc2 = check_top_n(distr, y_test, combinations_valid, n=2)

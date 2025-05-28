@@ -4,10 +4,11 @@ import shutil
 
 # List of script files to run
 script_files = [
-    'commands_smaller.txt',
-    'commands_same_deeper.txt',
-    'commands_wider_deeper.txt',
-    'commands_wider.txt'
+    'commands_same_2.txt',
+    'commands_same_3.txt',
+    'commands_same_4.txt',
+    'commands_same_5.txt',
+    'commands_same_6.txt'
 ]
 for script in script_files:
     with open(script, 'r') as f:
